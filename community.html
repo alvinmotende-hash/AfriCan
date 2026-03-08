@@ -34,7 +34,7 @@
   <section class="discussion-board">
     <h2>Start a Conversation</h2>
     <form id="postForm">
-      <textarea id="messageInput" placeholder="Write your message..."></textarea>
+      <textarea id="messageInput" placeholder="Write your message..." required></textarea>
       <button type="submit">Post</button>
     </form>
     <div id="posts">
@@ -55,24 +55,25 @@
     </article>
   </section>
 
+  <!-- Contact Form -->
   <section class="contact-form">
-  <h2>Get in Touch</h2>
-  <form action="#" method="post">
-    <label for="name">Name</label>
-    <input type="text" id="name" name="name" required>
+    <h2>Get in Touch</h2>
+    <form action="#" method="post">
+      <label for="name">Name</label>
+      <input type="text" id="name" name="name" required>
 
-    <label for="email">Email</label>
-    <input type="email" id="email" name="email" required>
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" required>
 
-    <label for="phone">Phone Number</label>
-    <input type="tel" id="phone" name="phone">
+      <label for="phone">Phone Number</label>
+      <input type="tel" id="phone" name="phone">
 
-    <label for="message">Message</label>
-    <textarea id="message" name="message" rows="1" required></textarea>
+      <label for="message">Message</label>
+      <textarea id="message" name="message" rows="1" required></textarea>
 
-    <button type="submit" class="btn">Send Message</button>
-  </form>
-</section>
+      <button type="submit" class="btn">Send Message</button>
+    </form>
+  </section>
 
   <!-- Sidebar -->
   <aside class="sidebar">
@@ -90,7 +91,35 @@
     <p>Follow us on social media: Facebook | Twitter | LinkedIn</p>
   </footer>
 
-  <script src="script.js"></script>
-  <script src="discussion.js"></script>
+  <!-- Firebase SDK + Config -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getDatabase, ref, push, onValue, update, remove } 
+      from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "african-discussion.firebaseapp.com",
+      databaseURL: "https://african-discussion-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "african-discussion",
+      storageBucket: "african-discussion.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    // Expose Firebase functions globally so discussion.js can use them
+    window.db = db;
+    window.ref = ref;
+    window.push = push;
+    window.onValue = onValue;
+    window.update = update;
+    window.remove = remove;
+  </script>
+
+  <!-- Your discussion logic -->
+  <script type="module" src="discussion.js"></script>
 </body>
 </html>
