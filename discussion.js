@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const postsRef = ref(db, "posts");
   const provider = new GoogleAuthProvider();
 
-  // --- Authentication ---
+  // Authentication
   loginBtn.onclick = () => {
     signInWithPopup(auth, provider)
       .then(result => {
@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
         loginBtn.style.display = "none";
         logoutBtn.style.display = "inline-block";
       })
-      .catch(error => console.error("Login error:", error));
+      .catch(error => console.error(error));
   };
 
   logoutBtn.onclick = () => {
@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   };
 
-  // --- Load posts in real-time ---
+  // Load posts in real-time
   onValue(postsRef, snapshot => {
     postsContainer.innerHTML = "";
     snapshot.forEach(child => {
@@ -37,7 +37,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // --- Post submission ---
   form.addEventListener("submit", e => {
     e.preventDefault();
     const message = messageInput.value.trim();
@@ -61,7 +60,6 @@ document.addEventListener("DOMContentLoaded", () => {
     messageInput.value = "";
   });
 
-  // --- Render posts with replies ---
   function renderPost(postData, id) {
     const post = document.createElement("div");
     post.classList.add("post");
@@ -113,6 +111,7 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     // Replies
+    // Replies container
     const repliesContainer = document.createElement("div");
     repliesContainer.classList.add("replies");
 
@@ -127,6 +126,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
 
+    // Reply form
     const replyForm = document.createElement("form");
     const replyInput = document.createElement("input");
     replyInput.placeholder = "Write a reply...";
@@ -152,6 +152,7 @@ document.addEventListener("DOMContentLoaded", () => {
       replyInput.value = "";
     });
 
+    // Assemble post
     buttonContainer.append(editBtn, deleteBtn, likeBtn);
     post.append(messageText, timestamp, buttonContainer, repliesContainer, replyForm);
     postsContainer.appendChild(post);
