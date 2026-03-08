@@ -1,0 +1,158 @@
+/* Reset & Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Open Sans', Arial, sans-serif;
+  line-height: 1.6;
+  background: #f5f5f5;
+  color: #222;
+}
+
+/* Hero Section */
+header.hero {
+  background: linear-gradient(135deg, #ff6600, #ffcc00);
+  color: #fff;
+  text-align: center;
+  padding: 3rem 1rem;
+}
+
+header.hero h1 {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+header.hero p {
+  font-size: 1.2rem;
+  opacity: 0.9;
+}
+
+/* Navigation */
+nav ul {
+  display: flex;
+  justify-content: center;
+  list-style: none;
+  margin-top: 1rem;
+}
+
+nav ul li {
+  margin: 0 1rem;
+}
+
+nav ul li a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: bold;
+  transition: color 0.3s;
+}
+
+nav ul li a:hover {
+  color: #222;
+}
+
+/* Sections */
+section {
+  background: #fff;
+  margin: 2rem auto;
+  padding: 2rem;
+  max-width: 1000px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+section h2 {
+  margin-bottom: 1rem;
+  color: #ff6600;
+}
+
+/* Buttons */
+.btn, button {
+  display: inline-block;
+  background: #ff6600;
+  color: #fff;
+  padding: 0.7rem 1.5rem;
+  border-radius: 5px;
+  text-decoration: none;
+  transition: background 0.3s, transform 0.2s;
+  border: none;
+  cursor: pointer;
+}
+
+.btn:hover, button:hover {
+  background: #cc5200;
+  transform: translateY(-2px);
+}
+
+/* Mentor Cards */
+.mentor-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+}
+
+.mentor-card {
+  background: #fafafa;
+  border: 1px solid #ddd;
+  padding: 1.5rem;
+  border-radius: 8px;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.mentor-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+}
+
+.mentor-card h3 {
+  margin-bottom: 0.5rem;
+  color: #006400;
+}
+
+/* Highlight Cards */
+.highlight-card, .value-card {
+  background: #fafafa;
+  border: 1px solid #eee;
+  padding: 1rem;
+  margin: 1rem 0;
+  border-radius: 8px;
+  transition: background 0.3s;
+}
+
+.highlight-card:hover, .value-card:hover {
+  background: #fffbf0;
+}
+
+/* Testimonials */
+blockquote {
+  background: #fff8e1;
+  border-left: 5px solid #ff6600;
+  padding: 1rem;
+  margin: 1rem 0;
+  font-style: italic;
+}
+
+/* Footer */
+footer {
+  background: #222;
+  color: #fff;
+  text-align: center;
+  padding: 1.5rem;
+  margin-top: 2rem;
+}
+
+footer p {
+  margin: 0.3rem 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  nav ul {
+    flex-direction: column;
+  }
+  nav ul li {
+    margin: 0.5rem 0;
+  }
+}
