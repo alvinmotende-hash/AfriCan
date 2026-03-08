@@ -20,6 +20,12 @@
     </nav>
   </header>
 
+  <!-- Authentication Section -->
+  <section id="authSection">
+    <button id="loginBtn">Login with Google</button>
+    <button id="logoutBtn" style="display:none;">Logout</button>
+  </section>
+
   <!-- Introduction -->
   <section class="intro">
     <h2>Welcome to the Forum</h2>
@@ -37,9 +43,7 @@
       <textarea id="messageInput" placeholder="Write your message..." required></textarea>
       <button type="submit">Post</button>
     </form>
-    <div id="posts">
-      <!-- Messages will appear here dynamically -->
-    </div>
+    <div id="posts"></div>
   </section>
 
   <!-- Featured Stories -->
@@ -96,30 +100,56 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getDatabase, ref, push, onValue, update, remove } 
       from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, 
+             setPersistence, browserLocalPersistence, onAuthStateChanged } 
+      from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
+    // 🔑 Replace with your actual config from Firebase Console → Project Settings → Your apps → Web SDK snippet
     const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "african-discussion.firebaseapp.com",
-      databaseURL: "https://african-discussion-default-rtdb.europe-west1.firebasedatabase.app",
-      projectId: "african-discussion",
-      storageBucket: "african-discussion.appspot.com",
-      messagingSenderId: "YOUR_SENDER_ID",
-      appId: "YOUR_APP_ID"
-    };
+  apiKey: "AIzaSyDDesB38MR1PxT7qrQ6O5ri_WD1O9lH1fo",
+  authDomain: "african-discussion.firebaseapp.com",
+  databaseURL: "https://african-discussion-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "african-discussion",
+  storageBucket: "african-discussion.firebasestorage.app",
+  messagingSenderId: "395870691014",
+  appId: "1:395870691014:web:395d15e9b371d035e181c7"
+};
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
+    const auth = getAuth(app);
 
-    // Expose Firebase functions globally so discussion.js can use them
+    // Stay signed in across reloads
+    setPersistence(auth, browserLocalPersistence);
+
+    // Update UI based on auth state
+    const loginBtn = document.getElementById("loginBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
+
+    onAuthStateChanged(auth, user => {
+      if (user) {
+        loginBtn.style.display = "none";
+        logoutBtn.style.display = "inline-block";
+      } else {
+        loginBtn.style.display = "inline-block";
+        logoutBtn.style.display = "none";
+      }
+    });
+
+    // Expose Firebase globally
     window.db = db;
     window.ref = ref;
     window.push = push;
     window.onValue = onValue;
     window.update = update;
     window.remove = remove;
+    window.auth = auth;
+    window.GoogleAuthProvider = GoogleAuthProvider;
+    window.signInWithPopup = signInWithPopup;
+    window.signOut = signOut;
   </script>
 
-  <!-- Your discussion logic -->
+  <!-- Discussion logic -->
   <script type="module" src="discussion.js"></script>
 </body>
 </html>
