@@ -8,26 +8,43 @@
 body {
   font-family: 'Open Sans', Arial, sans-serif;
   line-height: 1.6;
-  background: #f5f5f5;
-  color: #222;
+  color: #fff;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Dark overlay to keep image clear but darker */
+body::after {
+  content: "";
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.5); /* Adjust opacity as needed */
+  pointer-events: none;
+  z-index: -1;
 }
 
 /* Hero Section */
 header.hero {
-  background: linear-gradient(135deg, #ff6600, #ffcc00);
+  background: rgba(0,0,0,0.6);
   color: #fff;
   text-align: center;
   padding: 3rem 1rem;
+  border-radius: 12px;
+  max-width: 1000px;
+  margin: 2rem auto;
 }
 
 header.hero h1 {
   font-size: 2.5rem;
   margin-bottom: 0.5rem;
+  text-shadow: 0 0 15px #ff6600, 0 0 30px #ffcc00;
 }
 
 header.hero p {
   font-size: 1.2rem;
   opacity: 0.9;
+  text-shadow: 0 0 10px #00ffcc;
 }
 
 /* Navigation */
@@ -50,40 +67,42 @@ nav ul li a {
 }
 
 nav ul li a:hover {
-  color: #222;
+  color: #ffcc00;
 }
 
 /* Sections */
 section {
-  background: #fff;
+  background: rgba(0,0,0,0.6);
   margin: 2rem auto;
   padding: 2rem;
   max-width: 1000px;
   border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
 }
 
 section h2 {
   margin-bottom: 1rem;
-  color: #ff6600;
+  color: #ffcc00;
+  text-shadow: 0 0 10px #ff6600;
 }
 
 /* Buttons */
 .btn, button {
   display: inline-block;
-  background: #ff6600;
+  background: linear-gradient(135deg, #ff6600, #ffcc00);
   color: #fff;
   padding: 0.7rem 1.5rem;
   border-radius: 5px;
   text-decoration: none;
-  transition: background 0.3s, transform 0.2s;
+  transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
   border: none;
   cursor: pointer;
 }
 
 .btn:hover, button:hover {
-  background: #cc5200;
+  background: linear-gradient(135deg, #cc5200, #ffaa00);
   transform: translateY(-2px);
+  box-shadow: 0 0 15px rgba(255,204,0,0.7);
 }
 
 /* Mentor Cards */
@@ -94,8 +113,8 @@ section h2 {
 }
 
 .mentor-card {
-  background: #fafafa;
-  border: 1px solid #ddd;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid #444;
   padding: 1.5rem;
   border-radius: 8px;
   transition: transform 0.3s, box-shadow 0.3s;
@@ -103,44 +122,32 @@ section h2 {
 
 .mentor-card:hover {
   transform: scale(1.05);
-  box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+  box-shadow: 0 0 20px rgba(255,255,255,0.3);
 }
 
 .mentor-card h3 {
   margin-bottom: 0.5rem;
-  color: #006400;
-}
-
-/* Highlight Cards */
-.highlight-card, .value-card {
-  background: #fafafa;
-  border: 1px solid #eee;
-  padding: 1rem;
-  margin: 1rem 0;
-  border-radius: 8px;
-  transition: background 0.3s;
-}
-
-.highlight-card:hover, .value-card:hover {
-  background: #fffbf0;
+  color: #ffcc00;
 }
 
 /* Testimonials */
 blockquote {
-  background: #fff8e1;
+  background: rgba(255,255,255,0.1);
   border-left: 5px solid #ff6600;
   padding: 1rem;
   margin: 1rem 0;
   font-style: italic;
+  color: #fff;
 }
 
 /* Footer */
 footer {
-  background: #222;
+  background: rgba(0,0,0,0.8);
   color: #fff;
   text-align: center;
   padding: 1.5rem;
   margin-top: 2rem;
+  border-radius: 10px;
 }
 
 footer p {
