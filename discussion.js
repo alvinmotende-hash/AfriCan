@@ -1,3 +1,6 @@
+// Replace with your Firebase owner UID
+const OWNER_UID = "EwTQxequbDWFS6RHjrtrV6j2DxI3";
+
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("postForm");
   const messageInput = document.getElementById("messageInput");
@@ -47,6 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const now = new Date();
     const postData = {
+      userId: auth.currentUser.uid, // ✅ store userId
       username: auth.currentUser.displayName || "Anonymous",
       message,
       date: now.toLocaleDateString(),
@@ -76,19 +80,25 @@ document.addEventListener("DOMContentLoaded", () => {
     buttonContainer.style.display = "flex";
     buttonContainer.style.gap = "0.5rem";
 
+    const currentUser = auth.currentUser;
+
     // Edit button
     const editBtn = document.createElement("button");
     editBtn.textContent = "Edit";
     editBtn.onclick = () => {
-      if (!auth.currentUser) return alert("Login required to edit!");
-      const newMessage = prompt("Edit your message:", postData.message);
-      if (newMessage) {
-        update(ref(db, "posts/" + id), {
-          message: newMessage,
-          edited: true,
-          date: new Date().toLocaleDateString(),
-          time: new Date().toLocaleTimeString()
-        });
+      if (!currentUser) return alert("Login required to edit!");
+      if (currentUser.uid === OWNER_UID || currentUser.uid === postData.userId) {
+        const newMessage = prompt("Edit your message:", postData.message);
+        if (newMessage) {
+          update(ref(db, "posts/" + id), {
+            message: newMessage,
+            edited: true,
+            date: new Date().toLocaleDateString(),
+            time: new Date().toLocaleTimeString()
+          });
+        }
+      } else {
+        alert("You can only edit your own posts.");
       }
     };
 
@@ -96,9 +106,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const deleteBtn = document.createElement("button");
     deleteBtn.textContent = "Delete";
     deleteBtn.onclick = () => {
-      if (!auth.currentUser) return alert("Login required to delete!");
-      if (confirm("Delete this post?")) {
-        remove(ref(db, "posts/" + id));
+      if (!currentUser) return alert("Login required to delete!");
+      if (currentUser.uid === OWNER_UID || currentUser.uid === postData.userId) {
+        if (confirm("Delete this post?")) {
+          remove(ref(db, "posts/" + id));
+        }
+      } else {
+        alert("You can only delete your own posts.");
       }
     };
 
@@ -106,12 +120,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const likeBtn = document.createElement("button");
     likeBtn.textContent = `Like (${postData.likes})`;
     likeBtn.onclick = () => {
-      if (!auth.currentUser) return alert("Login required to like!");
+      if (!currentUser) return alert("Login required to like!");
       update(ref(db, "posts/" + id), { likes: postData.likes + 1 });
     };
 
     // Replies
-    // Replies container
     const repliesContainer = document.createElement("div");
     repliesContainer.classList.add("replies");
 
@@ -126,7 +139,6 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
 
-    // Reply form
     const replyForm = document.createElement("form");
     const replyInput = document.createElement("input");
     replyInput.placeholder = "Write a reply...";
@@ -137,13 +149,14 @@ document.addEventListener("DOMContentLoaded", () => {
     replyForm.addEventListener("submit", e => {
       e.preventDefault();
       const replyMessage = replyInput.value.trim();
-      if (!replyMessage || !auth.currentUser) {
+      if (!replyMessage || !currentUser) {
         alert("You must be logged in to reply!");
         return;
       }
       const now = new Date();
       const replyData = {
-        username: auth.currentUser.displayName || "Anonymous",
+        userId: currentUser.uid,
+        username: currentUser.displayName || "Anonymous",
         message: replyMessage,
         date: now.toLocaleDateString(),
         time: now.toLocaleTimeString()
@@ -152,9 +165,89 @@ document.addEventListener("DOMContentLoaded", () => {
       replyInput.value = "";
     });
 
-    // Assemble post
     buttonContainer.append(editBtn, deleteBtn, likeBtn);
     post.append(messageText, timestamp, buttonContainer, repliesContainer, replyForm);
     postsContainer.appendChild(post);
   }
+});
+
+// Legacy compat block preserved
+const postsRefCompat = firebase.database().ref("posts");
+
+document.getElementById("postForm").addEventListener("submit", function(e) {
+  e.preventDefault();
+  const message = document.getElementById("messageInput").value;
+  const user = firebase.auth().currentUser;
+
+  if (message.trim() !== "" && user) {
+    const newPostRef = postsRefCompat.push();
+    newPostRef.set({
+      message: message,
+      userId: user.uid,
+      userName: user.displayName || "Anonymous",
+      timestamp: Date.now()
+    });
+    document.getElementById("messageInput").value = "";
+  }
+});
+
+postsRefCompat.on("value", snapshot => {
+  const postsContainer = document.getElementById("posts");
+  postsContainer.innerHTML = "";
+
+  snapshot.forEach(childSnapshot => {
+    const post = childSnapshot.val();
+    const postId = childSnapshot.key;
+
+    const postDiv = document.createElement("div");
+    postDiv.classList.add("post");
+
+    const messageP = document.createElement("p");
+    messageP.textContent = post.message;
+
+    const userSpan = document.createElement("span");
+    userSpan.textContent = `Posted by ${post.userName}`;
+
+    const timeSpan = document.createElement("span");
+    const date = new Date(post.timestamp);
+    timeSpan.textContent = date.toLocaleString();
+
+    postDiv.appendChild(messageP);
+    postDiv.appendChild(userSpan);
+    postDiv.appendChild(timeSpan);
+
+    const currentUser = firebase.auth().currentUser;
+    if (currentUser && (currentUser.uid === OWNER_UID || currentUser.uid === post.userId)) {
+      const deleteBtn = document.createElement("button");
+      deleteBtn.textContent = "Delete";
+      deleteBtn.addEventListener("click", () => {
+        if (currentUser.uid === OWNER_UID || currentUser.uid === post.userId) {
+          postsRefCompat.child(postId).remove();
+        } else {
+          alert("You can only delete your own posts.");
+        }
+      });
+
+      const editBtn = document.createElement("button");
+      editBtn.textContent = "Edit";
+      editBtn.addEventListener("click", () => {
+        if (currentUser.uid === OWNER_UID || currentUser.uid === post.userId) {
+          const newMessage = prompt("Edit your post:", post.message);
+          if (newMessage && newMessage.trim() !== "") {
+            postsRefCompat.child(postId).update({
+              message: newMessage,
+              timestamp: Date.now()
+            });
+          }
+        } else {
+          alert("You can only edit your own posts.");
+        }
+      });
+
+      postDiv.appendChild(deleteBtn);
+      postDiv.appendChild(editBtn);
+    }
+
+    postsContainer.appendChild(postDiv);
+  });
 });
